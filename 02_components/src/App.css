@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+}
+
+.content {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.header {
+  background-color: gray;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.footer {
+  background-color: lightgray;
+  height: 75px;
+}
+
+.text-page {
+  text-align: center;
+  padding: 0px 250px;
+  font-size: 1.2em;
+  color: wheat;
+}
+
+.sidebar {
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.side-item {
+  font-size: 1.2em;
+  margin: 8px 0px;
+  color:white;
+}
+
+.side-item:hover {
+  cursor: pointer;
+  color: gainsboro;
+}
