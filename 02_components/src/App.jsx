@@ -9,7 +9,7 @@ function App() {
     <>
       <Header />
       <div className='content'>
-        <MainPage />
+        <ColorsPage />
       </div>
       <Footer />
     </>
