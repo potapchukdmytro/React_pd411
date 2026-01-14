@@ -1,4 +1,5 @@
 import BookCard from "./BookCard";
+import BookCreateForm from "./BookCreateForm";
 import books from "./books.json";
 import { Box, Grid } from "@mui/material";
 
@@ -20,6 +21,7 @@ const BookListPage = () => {
                     </Grid>
                 ))}
             </Grid>
+            <BookCreateForm />
         </Box>
     );
 };
