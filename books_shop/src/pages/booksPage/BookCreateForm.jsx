@@ -65,19 +65,35 @@ const BookCreateForm = () => {
         console.log(values);
     };
 
+    const getError = (prop) => {
+        return formik.touched[prop] && formik.errors[prop] ? (
+            <Typography sx={{ mx: 1, color: "red" }} variant="h7">
+                {formik.errors[prop]}
+            </Typography>
+        ) : null;
+    };
+
     // validation scheme
     const maxYear = new Date().getFullYear();
     const validationScheme = object({
-        title: string().required("Обов'язкове поле").max(100, "Максимальна довжина 100 символів"),
+        title: string()
+            .required("Обов'язкове поле")
+            .max(100, "Максимальна довжина 100 символів"),
         author: string().max(100, "Максимальна довжина 100 символів"),
-        genre: string().required("Обов'язкове поле").max(50, "Максимальна довжина 50 символів"),
-        year: number().min(0, "Рік не може бути від'ємним").max(maxYear, `Рік не може бути більшим за ${maxYear}`).required("Обов'язкове поле")
+        genre: string()
+            .required("Обов'язкове поле")
+            .max(50, "Максимальна довжина 50 символів"),
+        year: number()
+            .min(0, "Рік не може бути від'ємним")
+            .max(maxYear, `Рік не може бути більшим за ${maxYear}`)
+            .required("Обов'язкове поле"),
     });
 
     // formik
     const formik = useFormik({
         initialValues: initValues,
-        onSubmit: handleSubmit
+        onSubmit: handleSubmit,
+        validationSchema: validationScheme,
     });
 
     return (
@@ -115,8 +131,10 @@ const BookCreateForm = () => {
                                 variant="outlined"
                                 value={formik.values.title}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             />
                         </FormControl>
+                        {getError("title")}
                         <FormControl>
                             <FormLabel htmlFor="author">Автор</FormLabel>
                             <TextField
@@ -127,8 +145,10 @@ const BookCreateForm = () => {
                                 variant="outlined"
                                 value={formik.values.author}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             />
                         </FormControl>
+                        {getError("author")}
                         <FormControl>
                             <FormLabel htmlFor="genre">Жанр</FormLabel>
                             <TextField
@@ -139,8 +159,10 @@ const BookCreateForm = () => {
                                 variant="outlined"
                                 value={formik.values.genre}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             />
                         </FormControl>
+                        {getError("genre")}
                         <FormControl>
                             <FormLabel htmlFor="year">Рік</FormLabel>
                             <TextField
@@ -152,7 +174,10 @@ const BookCreateForm = () => {
                                 variant="outlined"
                                 value={formik.values.year}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             />
+                            {/* error */}
+                            {getError("year")}
                         </FormControl>
                         <FormControl>
                             <FormLabel htmlFor="cover">Обкладинка</FormLabel>
@@ -164,6 +189,7 @@ const BookCreateForm = () => {
                                 variant="outlined"
                                 value={formik.values.cover}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             />
                         </FormControl>
                         <Button
