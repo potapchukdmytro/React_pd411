@@ -176,7 +176,6 @@ const BookCreateForm = ({createCallback}) => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {/* error */}
                             {getError("year")}
                         </FormControl>
                         <FormControl>
@@ -215,20 +214,21 @@ export default BookCreateForm;
 
 
 
-function bookList() {
-    const list = [2, 3];
+// function bookList() {
+//     const list = [2, 3];
 
-    function addNew(value) {
-        list.push(value);
-    }
+//     function addNew(value) {
+//         list.push(value);
+//     }
 
-    form(addNew);
-}
+//     // form(addNew);
+//     "<form addCallback={addNew}/>"
+// }
 
-function form(addCallback) {
-    const book = 1;
-    addCallback(book);
-}
+// function form({addCallback}) {
+//     const book = 1;
+//     addCallback(book);
+// }
 
 
 

@@ -5,7 +5,6 @@ import booksJson from "./books.json";
 import { Box, Grid } from "@mui/material";
 
 // sx == style
-
 const BookListPage = () => {
     const [books, setBooks] = useState([]);
 
@@ -21,8 +20,31 @@ const BookListPage = () => {
         }
     }, []);
 
-    const addNewBook = (newBook) => {
+    const addNewBook = (newBook) => {   
+        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
+        newBook.id = id;
+        newBook.isFavorite = false;
+        newBook.cover_url = newBook.cover;
+        delete newBook.cover;
+        const newList = [...books, newBook];
+        setBooks(newList);
+        localStorage.setItem("books", JSON.stringify(newList));
+    }
 
+    const deleteBook = (id) => {
+        const newList = books.filter(b => b.id !== id);
+        setBooks(newList);
+        localStorage.setItem("books", JSON.stringify(newList));
+    }
+
+    const setFavorite = (id, favorite) => {
+        const newList = [...books];
+        const index = newList.findIndex(b => b.id === id);
+        if(index !== -1) {
+            newList[index].isFavorite = favorite;
+            setBooks(newList);
+            localStorage.setItem("books", JSON.stringify(newList));
+        }
     }
 
     return (
@@ -36,7 +58,7 @@ const BookListPage = () => {
             <Grid container spacing={2} mx="100px" my="50px">
                 {books.map((b) => (
                     <Grid size={3} key={b.id}>
-                        <BookCard book={b} />
+                        <BookCard book={b} deleteCallback={deleteBook} favoriteCallback={setFavorite} />
                     </Grid>
                 ))}
             </Grid>
