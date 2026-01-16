@@ -60,10 +60,11 @@ const initValues = {
     cover: "",
 };
 
-const BookCreateForm = () => {
-    const handleSubmit = (values) => {
-        console.log(values);
-    };
+const BookCreateForm = ({createCallback}) => {
+
+    function handleSubmit(formValues) {
+        createCallback(formValues);
+    }
 
     const getError = (prop) => {
         return formik.touched[prop] && formik.errors[prop] ? (
@@ -126,7 +127,6 @@ const BookCreateForm = () => {
                                 name="title"
                                 placeholder="Назва книги"
                                 autoComplete="title"
-                                autoFocus
                                 fullWidth
                                 variant="outlined"
                                 value={formik.values.title}
@@ -208,6 +208,30 @@ const BookCreateForm = () => {
 };
 
 export default BookCreateForm;
+
+
+
+
+
+
+
+function bookList() {
+    const list = [2, 3];
+
+    function addNew(value) {
+        list.push(value);
+    }
+
+    form(addNew);
+}
+
+function form(addCallback) {
+    const book = 1;
+    addCallback(book);
+}
+
+
+
 
 // const BookCreateForm = () => {
 //     const [values, setValues] = useState({
