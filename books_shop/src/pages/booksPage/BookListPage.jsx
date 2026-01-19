@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import BookCard from "./BookCard";
 import booksJson from "./books.json";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, IconButton } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Link } from "react-router";
 
 // sx == style
 const BookListPage = () => {
@@ -19,32 +21,21 @@ const BookListPage = () => {
         }
     }, []);
 
-    const addNewBook = (newBook) => {   
-        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
-        newBook.id = id;
-        newBook.isFavorite = false;
-        newBook.cover_url = newBook.cover;
-        delete newBook.cover;
-        const newList = [...books, newBook];
-        setBooks(newList);
-        localStorage.setItem("books", JSON.stringify(newList));
-    }
-
     const deleteBook = (id) => {
-        const newList = books.filter(b => b.id !== id);
+        const newList = books.filter((b) => b.id !== id);
         setBooks(newList);
         localStorage.setItem("books", JSON.stringify(newList));
-    }
+    };
 
     const setFavorite = (id, favorite) => {
         const newList = [...books];
-        const index = newList.findIndex(b => b.id === id);
-        if(index !== -1) {
+        const index = newList.findIndex((b) => b.id === id);
+        if (index !== -1) {
             newList[index].isFavorite = favorite;
             setBooks(newList);
             localStorage.setItem("books", JSON.stringify(newList));
         }
-    }
+    };
 
     return (
         <Box
@@ -57,9 +48,28 @@ const BookListPage = () => {
             <Grid container spacing={2} mx="100px" my="50px">
                 {books.map((b) => (
                     <Grid size={3} key={b.id}>
-                        <BookCard book={b} deleteCallback={deleteBook} favoriteCallback={setFavorite} />
+                        <BookCard
+                            book={b}
+                            deleteCallback={deleteBook}
+                            favoriteCallback={setFavorite}
+                        />
                     </Grid>
                 ))}
+                <Grid size={books.length % 4 === 0 ? 12 : 3}>
+                    <Box
+                        width="100%"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        height="100%"
+                    >
+                        <Link to="/bookcreate">
+                            <IconButton color="secondary">
+                                <AddCircleIcon sx={{ fontSize: "3em" }} />
+                            </IconButton>
+                        </Link>
+                    </Box>
+                </Grid>
             </Grid>
         </Box>
     );

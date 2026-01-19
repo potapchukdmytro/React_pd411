@@ -9,6 +9,7 @@ import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
+import { useNavigate } from "react-router";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -60,10 +61,26 @@ const initValues = {
     cover: "",
 };
 
-const BookCreateForm = ({createCallback}) => {
+const BookCreateForm = () => {
+    const navigate = useNavigate();
 
-    function handleSubmit(formValues) {
-        createCallback(formValues);
+    function handleSubmit(newBook) {
+        let books = [];
+        const localData = localStorage.getItem("books");
+        if (localData) {
+            books = JSON.parse(localData);
+        }
+
+        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
+        newBook.id = id;
+        newBook.isFavorite = false;
+        newBook.cover_url = newBook.cover;
+        delete newBook.cover;
+        const newList = [...books, newBook];
+        localStorage.setItem("books", JSON.stringify(newList));
+
+        // перенаправити користувача на сторінку з книгами
+        navigate("/books");
     }
 
     const getError = (prop) => {
@@ -208,12 +225,6 @@ const BookCreateForm = ({createCallback}) => {
 
 export default BookCreateForm;
 
-
-
-
-
-
-
 // function bookList() {
 //     const list = [2, 3];
 
@@ -229,9 +240,6 @@ export default BookCreateForm;
 //     const book = 1;
 //     addCallback(book);
 // }
-
-
-
 
 // const BookCreateForm = () => {
 //     const [values, setValues] = useState({
