@@ -2,6 +2,7 @@ import "./App.css";
 import Navbar from "./components/navbar/Navbar";
 import TestUseEffect from "./components/TestUseEffect";
 import BookListPage from "./pages/booksPage/BookListPage";
+import AuthorListPage from "./pages/authorsPage/AuthorsListPage";
 
 function App() {
     return (
@@ -9,6 +10,7 @@ function App() {
             <Navbar />
             <BookListPage />
             {/* <TestUseEffect/> */}
+            {/* <AuthorListPage /> */}
         </>
     );
 }
