@@ -23,7 +23,7 @@ function App() {
                     <Route path="books">
                         <Route index element={<BookListPage />} />
                         <Route path="create" element={<BookCreateForm />} />
-                        <Route path="update" element={<BookUpdateForm />} />
+                        <Route path="update/:id" element={<BookUpdateForm />} />
                     </Route>
 
                     {/* authors */}

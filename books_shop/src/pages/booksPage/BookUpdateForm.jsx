@@ -7,8 +7,8 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import { useEffect, useState } from "react";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -61,6 +61,21 @@ const BookUpdateForm = () => {
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const { id } = useParams();
+
+    // useEffect(() => {
+    //     const localData = localStorage.getItem("books");
+    //     if (localData) {
+    //         const books = JSON.parse(localData);
+    //         const book = books.find((b) => b.id == id);
+    //         if (!book) {
+    //             navigate("/books", { replace: true });
+    //         }
+    //         setFormValues(book);
+    //     } else {
+    //         navigate("/books", { replace: true });
+    //     }
+    // }, []);
 
     function onChangeHandle(event) {
         const { name, value } = event.target;
@@ -113,29 +128,23 @@ const BookUpdateForm = () => {
 
         const validateResult = validate();
 
-        if(!validateResult.result) {
+        if (!validateResult.result) {
             setErrors(validateResult.errors);
             return;
         } else {
             setErrors({});
         }
 
-        // let books = [];
-        // const localData = localStorage.getItem("books");
-        // if (localData) {
-        //     books = JSON.parse(localData);
-        // }
+        const localData = localStorage.getItem("books");
+        if (localData) {
+            const books = JSON.parse(localData);
+            const index = books.findIndex(b => b.id == id);
+            books[index] = formValues;
+            localStorage.setItem("books", JSON.stringify(books));
+        }
 
-        // const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
-        // newBook.id = id;
-        // newBook.isFavorite = false;
-        // newBook.cover_url = newBook.cover;
-        // delete newBook.cover;
-        // const newList = [...books, newBook];
-        // localStorage.setItem("books", JSON.stringify(newList));
-
-        // // перенаправити користувача на сторінку з книгами
-        // navigate("/books");
+        // перенаправити користувача на сторінку з книгами
+        navigate("/books");
     }
 
     const getError = (prop) => {
