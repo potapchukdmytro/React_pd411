@@ -7,26 +7,35 @@ import { Routes, Route } from "react-router";
 import BookCreateForm from "./pages/booksPage/BookCreateForm";
 import NotFoundPage from "./pages/notFoundPage/NotFoundPage";
 import MainPage from "./pages/mainPage/MainPage";
+import Footer from "./components/footer/Footer";
+import DefaultLayout from "./components/layouts/DefaultLayout";
+import BookUpdateForm from "./pages/booksPage/BookUpdateForm";
 
 function App() {
     return (
         <>
-            <Navbar />
-
             {/* Маршрути */}
             <Routes>
-                <Route path="/" element={<MainPage />} />
+                <Route path="/" element={<DefaultLayout />}>
+                    <Route index element={<MainPage />} />
 
-                {/* books */}
-                <Route path="/books" element={<BookListPage />} />
-                <Route path="/bookcreate" element={<BookCreateForm />} />
+                    {/* books */}
+                    <Route path="books">
+                        <Route index element={<BookListPage />} />
+                        <Route path="create" element={<BookCreateForm />} />
+                        <Route path="update" element={<BookUpdateForm />} />
+                    </Route>
 
-                {/* authors */}
-                <Route path="/authors" element={<AuthorListPage />} />
-                <Route path="/authorcreate" element={<AuthorsCreateForm />} />
+                    {/* authors */}
 
-                {/* Якщо вказано шлях якого не існує */}
-                <Route path="*" element={<NotFoundPage />} />
+                    <Route path="authors">
+                        <Route index element={<AuthorListPage />} />
+                        <Route path="create" element={<AuthorsCreateForm />} />
+                    </Route>
+
+                    {/* Якщо вказано шлях якого не існує */}
+                    <Route path="*" element={<NotFoundPage />} />
+                </Route>
             </Routes>
         </>
     );
