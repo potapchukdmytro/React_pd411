@@ -63,19 +63,19 @@ const BookUpdateForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    // useEffect(() => {
-    //     const localData = localStorage.getItem("books");
-    //     if (localData) {
-    //         const books = JSON.parse(localData);
-    //         const book = books.find((b) => b.id == id);
-    //         if (!book) {
-    //             navigate("/books", { replace: true });
-    //         }
-    //         setFormValues(book);
-    //     } else {
-    //         navigate("/books", { replace: true });
-    //     }
-    // }, []);
+    useEffect(() => {
+        const localData = localStorage.getItem("books");
+        if (localData) {
+            const books = JSON.parse(localData);
+            const book = books.find((b) => b.id == id);
+            if (!book) {
+                navigate("/books", { replace: true });
+            }
+            setFormValues(book);
+        } else {
+            navigate("/books", { replace: true });
+        }
+    }, []);
 
     function onChangeHandle(event) {
         const { name, value } = event.target;
