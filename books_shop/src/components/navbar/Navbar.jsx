@@ -7,16 +7,15 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import { Tooltip, Avatar } from "@mui/material";
 import { Link } from "react-router";
 
 const settings = ["Профіль", "Вийти"];
 
-const Navbar = () => {
+const Navbar = ({ isAuth }) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -149,17 +148,40 @@ const Navbar = () => {
                         </Link>
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton
-                                onClick={handleOpenUserMenu}
-                                sx={{ p: 0 }}
-                            >
-                                <Avatar
-                                    alt="Remy Sharp"
-                                    src="/static/images/avatar/2.jpg"
-                                />
-                            </IconButton>
-                        </Tooltip>
+                        {isAuth ? (
+                            <>
+                                <Tooltip title="Open settings">
+                                    <IconButton
+                                        onClick={handleOpenUserMenu}
+                                        sx={{ p: 0 }}
+                                    >
+                                        <Avatar
+                                            alt="Remy Sharp"
+                                            src="/static/images/avatar/2.jpg"
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login">
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ color: "white" }}
+                                    >
+                                        Увійти
+                                    </Button>
+                                </Link>
+                                <Link to="/register">
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ color: "white" }}
+                                    >
+                                        Зареєструватися
+                                    </Button>
+                                </Link>
+                            </>
+                        )}
                         <Menu
                             sx={{ mt: "45px" }}
                             id="menu-appbar"
