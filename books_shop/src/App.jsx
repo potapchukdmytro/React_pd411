@@ -9,42 +9,25 @@ import MainPage from "./pages/mainPage/MainPage";
 import DefaultLayout from "./components/layouts/DefaultLayout";
 import BookUpdateForm from "./pages/booksPage/BookUpdateForm";
 import LoginPage from "./pages/auth/loginPage/LoginPage";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
-    const [isAuth, setIsAuth] = useState(false);
+    const { isAuth, login } = useAuth();
 
     // auth
     useEffect(() => {
         const authData = localStorage.getItem("auth");
         if (authData) {
-            setIsAuth(true);
+            login();
         }
     }, []);
-
-    // const is = true;
-
-    // 1
-    // if (is) {
-    //     <div></div>
-    // } else {
-    //     <h1></h1>
-    // }
-    // is ? (<div></div>) : (<h1></h1>);
-
-
-    // 2
-    // if (is) {
-    //     <div></div>
-    // }
-
-    // is && <div></div>;
 
     return (
         <>
             {/* Маршрути */}
             <Routes>
-                <Route path="/" element={<DefaultLayout isAuth={isAuth} />}>
+                <Route path="/" element={<DefaultLayout />}>
                     <Route index element={<MainPage />} />
 
                     {/* books */}
@@ -65,12 +48,7 @@ function App() {
 
                     {/* if(!isAuth){ retun <Route/> } */}
 
-                    {!isAuth && (
-                        <Route
-                            path="login"
-                            element={<LoginPage setAuthCallback={setIsAuth} />}
-                        />
-                    )}
+                    {!isAuth && <Route path="login" element={<LoginPage />} />}
 
                     {/* Якщо вказано шлях якого не існує */}
                     <Route path="*" element={<NotFoundPage />} />

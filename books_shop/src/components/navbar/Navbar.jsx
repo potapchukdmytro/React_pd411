@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,12 +12,15 @@ import MenuItem from "@mui/material/MenuItem";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import { Tooltip, Avatar } from "@mui/material";
 import { Link } from "react-router";
+import { useAuth } from "../../context/AuthContext";
 
 const settings = ["Профіль", "Вийти"];
 
-const Navbar = ({ isAuth }) => {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+const Navbar = () => {
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
+
+    const { isAuth, logout } = useAuth();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -33,6 +36,11 @@ const Navbar = ({ isAuth }) => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const logoutButtonHandler = () => {
+        logout();
+        handleCloseUserMenu();
+    }
 
     return (
         <AppBar position="static" color="error">
@@ -198,16 +206,20 @@ const Navbar = ({ isAuth }) => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem
-                                    key={setting}
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    <Typography sx={{ textAlign: "center" }}>
-                                        {setting}
-                                    </Typography>
-                                </MenuItem>
-                            ))}
+                            <MenuItem
+                                onClick={handleCloseUserMenu}
+                            >
+                                <Typography sx={{ textAlign: "center" }}>
+                                    Профіль
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem
+                                onClick={logoutButtonHandler}
+                            >
+                                <Typography sx={{ textAlign: "center" }}>
+                                    Вийти
+                                </Typography>
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>

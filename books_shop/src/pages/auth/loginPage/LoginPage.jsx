@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
+import { AuthContext, useAuth } from "../../../context/AuthContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -57,12 +58,13 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-const LoginPage = ({ setAuthCallback }) => {
+const LoginPage = () => {
     const [open, setOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -89,7 +91,7 @@ const LoginPage = ({ setAuthCallback }) => {
         }
 
         localStorage.setItem("auth", JSON.stringify(cred));
-        setAuthCallback(true);
+        login();
         navigate("/", { replace: true });
     };
 
