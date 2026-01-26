@@ -1,5 +1,5 @@
-import { useRef, useState, useContext } from "react";
-import { AuthContext, useAuth } from "../../../context/AuthContext";
+import { useRef, useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";

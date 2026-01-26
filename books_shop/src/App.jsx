@@ -9,8 +9,11 @@ import MainPage from "./pages/mainPage/MainPage";
 import DefaultLayout from "./components/layouts/DefaultLayout";
 import BookUpdateForm from "./pages/booksPage/BookUpdateForm";
 import LoginPage from "./pages/auth/loginPage/LoginPage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "@mui/material";
+import { lightTheme } from "./theme/lightTheme";
+import { darkTheme } from "./theme/darkTheme";
 
 function App() {
     const { isAuth, login } = useAuth();
@@ -23,37 +26,50 @@ function App() {
         }
     }, []);
 
+    // theme
+    const [isDark, setIsDark] = useState(false);
+
     return (
         <>
-            {/* Маршрути */}
-            <Routes>
-                <Route path="/" element={<DefaultLayout />}>
-                    <Route index element={<MainPage />} />
+            <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+                {/* Маршрути */}
+                <Routes>
+                    <Route path="/" element={<DefaultLayout setIsDark={setIsDark} isDark={isDark} />}>
+                        <Route index element={<MainPage />} />
 
-                    {/* books */}
-                    <Route path="books">
-                        <Route index element={<BookListPage />} />
-                        <Route path="create" element={<BookCreateForm />} />
-                        <Route path="update/:id" element={<BookUpdateForm />} />
+                        {/* books */}
+                        <Route path="books">
+                            <Route index element={<BookListPage />} />
+                            <Route path="create" element={<BookCreateForm />} />
+                            <Route
+                                path="update/:id"
+                                element={<BookUpdateForm />}
+                            />
+                        </Route>
+
+                        {/* authors */}
+
+                        <Route path="authors">
+                            <Route index element={<AuthorListPage />} />
+                            <Route
+                                path="create"
+                                element={<AuthorsCreateForm />}
+                            />
+                        </Route>
+
+                        {/* auth */}
+
+                        {/* if(!isAuth){ retun <Route/> } */}
+
+                        {!isAuth && (
+                            <Route path="login" element={<LoginPage />} />
+                        )}
+
+                        {/* Якщо вказано шлях якого не існує */}
+                        <Route path="*" element={<NotFoundPage />} />
                     </Route>
-
-                    {/* authors */}
-
-                    <Route path="authors">
-                        <Route index element={<AuthorListPage />} />
-                        <Route path="create" element={<AuthorsCreateForm />} />
-                    </Route>
-
-                    {/* auth */}
-
-                    {/* if(!isAuth){ retun <Route/> } */}
-
-                    {!isAuth && <Route path="login" element={<LoginPage />} />}
-
-                    {/* Якщо вказано шлях якого не існує */}
-                    <Route path="*" element={<NotFoundPage />} />
-                </Route>
-            </Routes>
+                </Routes>
+            </ThemeProvider>
         </>
     );
 }

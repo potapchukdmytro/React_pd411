@@ -13,10 +13,12 @@ import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import { Tooltip, Avatar } from "@mui/material";
 import { Link } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 const settings = ["Профіль", "Вийти"];
 
-const Navbar = () => {
+const Navbar = ({ isDark, setIsDark }) => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -40,10 +42,14 @@ const Navbar = () => {
     const logoutButtonHandler = () => {
         logout();
         handleCloseUserMenu();
-    }
+    };
+
+    const changeThemeHandle = () => {
+        setIsDark(!isDark);
+    };
 
     return (
-        <AppBar position="static" color="error">
+        <AppBar position="static" color="primary">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <LibraryBooksIcon
@@ -155,6 +161,14 @@ const Navbar = () => {
                             </Button>
                         </Link>
                     </Box>
+                    <Box sx={{ flexGrow: 0, mx: 5 }}>
+                        <IconButton
+                            onClick={changeThemeHandle}
+                            sx={{ color: "white" }}
+                        >
+                            {isDark ? <LightModeIcon /> : <DarkModeIcon />}
+                        </IconButton>
+                    </Box>
                     <Box sx={{ flexGrow: 0 }}>
                         {isAuth ? (
                             <>
@@ -206,16 +220,12 @@ const Navbar = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem
-                                onClick={handleCloseUserMenu}
-                            >
+                            <MenuItem onClick={handleCloseUserMenu}>
                                 <Typography sx={{ textAlign: "center" }}>
                                     Профіль
                                 </Typography>
                             </MenuItem>
-                            <MenuItem
-                                onClick={logoutButtonHandler}
-                            >
+                            <MenuItem onClick={logoutButtonHandler}>
                                 <Typography sx={{ textAlign: "center" }}>
                                     Вийти
                                 </Typography>
