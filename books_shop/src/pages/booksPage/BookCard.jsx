@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { Link } from "react-router";
+import { Rating } from "@mui/material";
 
 const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
     const [isFavorite, setIsFavorite] = useState(book.isFavorite);
@@ -59,9 +60,9 @@ const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
                 }
                 alt={book.title}
             />
-            <CardContent>
+            <CardContent sx={{textAlign: "center"}}>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {book.genre}, {book.year}р
+                    <Rating readOnly max={10} value={Math.round(book.rating * 10)}/>
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
