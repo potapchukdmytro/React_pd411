@@ -25,7 +25,7 @@ const BookListPage = () => {
 
     async function fetchBooks() {
         const baseUrl = "https://api.bigbookapi.com/search-books";
-        const apiKey = "dbd87c21c12b46eab7745ee7e842c643";
+        const apiKey = "";
         const pageCount = 15;
         const url = `${baseUrl}?min-rating=0.5&number=${pageCount}&api-key=${apiKey}`;
 
