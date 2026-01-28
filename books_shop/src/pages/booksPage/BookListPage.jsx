@@ -25,7 +25,7 @@ const BookListPage = () => {
 
     async function fetchBooks() {
         const baseUrl = "https://api.bigbookapi.com/search-books";
-        const apiKey = "c1f49f3322114f2db440d348114e1a0e";
+        const apiKey = "dbd87c21c12b46eab7745ee7e842c643";
         const pageCount = 15;
         const url = `${baseUrl}?min-rating=0.5&number=${pageCount}&api-key=${apiKey}`;
 
@@ -82,7 +82,7 @@ const BookListPage = () => {
     if (loading) {
         return (
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <CircularProgress enableTrackSlot size="3rem" sx={{ mt: 4 }} />;
+                <CircularProgress enableTrackSlot size="3rem" sx={{ mt: 4 }} />
             </Box>
         );
     }
