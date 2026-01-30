@@ -5,11 +5,13 @@ import { Box, Grid, IconButton, CircularProgress } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Link } from "react-router";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 // sx == style
 const BookListPage = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { isAuth, user } = useAuth();
 
     // спрацює тільки при першому рендері
     // useEffect(() => {
@@ -105,21 +107,23 @@ const BookListPage = () => {
                         />
                     </Grid>
                 ))}
-                <Grid size={books.length % 3 === 0 ? 12 : 4}>
-                    <Box
-                        width="100%"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="100%"
-                    >
-                        <Link to="create">
-                            <IconButton color="secondary">
-                                <AddCircleIcon sx={{ fontSize: "3em" }} />
-                            </IconButton>
-                        </Link>
-                    </Box>
-                </Grid>
+                {isAuth && user.role === "admin" && (
+                    <Grid size={books.length % 3 === 0 ? 12 : 4}>
+                        <Box
+                            width="100%"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            height="100%"
+                        >
+                            <Link to="create">
+                                <IconButton color="secondary">
+                                    <AddCircleIcon sx={{ fontSize: "3em" }} />
+                                </IconButton>
+                            </Link>
+                        </Box>
+                    </Grid>
+                )}
             </Grid>
         </Box>
     );

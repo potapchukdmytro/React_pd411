@@ -14,9 +14,10 @@ import { useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "@mui/material";
 import { lightTheme } from "./theme/lightTheme";
 import { darkTheme } from "./theme/darkTheme";
+import RegisterPage from "./pages/auth/registerPage/RegisterPage";
 
 function App() {
-    const { isAuth, login } = useAuth();
+    const { isAuth, login, user } = useAuth();
 
     // auth
     useEffect(() => {
@@ -34,17 +35,32 @@ function App() {
             <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
                 {/* Маршрути */}
                 <Routes>
-                    <Route path="/" element={<DefaultLayout setIsDark={setIsDark} isDark={isDark} />}>
+                    <Route
+                        path="/"
+                        element={
+                            <DefaultLayout
+                                setIsDark={setIsDark}
+                                isDark={isDark}
+                            />
+                        }
+                    >
                         <Route index element={<MainPage />} />
 
                         {/* books */}
                         <Route path="books">
                             <Route index element={<BookListPage />} />
-                            <Route path="create" element={<BookCreateForm />} />
-                            <Route
-                                path="update/:id"
-                                element={<BookUpdateForm />}
-                            />
+                            {isAuth && user.role === "admin" && (
+                                <>
+                                    <Route
+                                        path="create"
+                                        element={<BookCreateForm />}
+                                    />
+                                    <Route
+                                        path="update/:id"
+                                        element={<BookUpdateForm />}
+                                    />
+                                </>
+                            )}
                         </Route>
 
                         {/* authors */}
@@ -62,7 +78,13 @@ function App() {
                         {/* if(!isAuth){ retun <Route/> } */}
 
                         {!isAuth && (
-                            <Route path="login" element={<LoginPage />} />
+                            <>
+                                <Route path="login" element={<LoginPage />} />
+                                <Route
+                                    path="register"
+                                    element={<RegisterPage />}
+                                />
+                            </>
                         )}
 
                         {/* Якщо вказано шлях якого не існує */}
