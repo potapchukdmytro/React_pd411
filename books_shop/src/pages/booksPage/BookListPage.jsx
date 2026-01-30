@@ -26,43 +26,44 @@ const BookListPage = () => {
     // }, [])
 
     async function fetchBooks() {
-        const baseUrl = "https://api.bigbookapi.com/search-books";
-        const apiKey = "";
+        const booksUrl = import.meta.env.VITE_BOOKS_URL;
         const pageCount = 15;
-        const url = `${baseUrl}?min-rating=0.5&number=${pageCount}&api-key=${apiKey}`;
+        const page = 1;
+        const url = `${booksUrl}?page_size=${pageCount}&page=${page}`;
 
         const response = await axios.get(url);
         const { data, status } = response;
         if (status === 200) {
             const booksData = [];
-            for (const [book] of data.books) {
+            for (const book of data.data.items) {
                 const formated = {
                     id: book.id,
                     title: book.title,
-                    author: book.authors[0].name,
+                    author: book.author.name,
                     cover_url: book.image,
-                    rating: book.rating.average,
+                    rating: book.rating,
                     isFavorite: false,
                 };
                 booksData.push(formated);
             }
             setBooks(booksData);
             setLoading(false);
-            localStorage.setItem("books", JSON.stringify(booksData));
+            // localStorage.setItem("books", JSON.stringify(booksData));
         } else {
             console.log("Не вдалося завантажити книги");
         }
     }
 
     useEffect(() => {
-        const localData = localStorage.getItem("books");
-        if (localData) {
-            setBooks(JSON.parse(localData));
-            setLoading(false);
-        } else {
-            // запит на API
-            fetchBooks();
-        }
+        // const localData = localStorage.getItem("books");
+        // if (localData) {
+        //     setBooks(JSON.parse(localData));
+        //     setLoading(false);
+        // } else {
+        //     // запит на API
+        //     fetchBooks();
+        // }
+        fetchBooks();
     }, []);
 
     const deleteBook = (id) => {
