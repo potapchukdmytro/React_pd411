@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -54,32 +55,25 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 const initValues = {
     title: "",
-    author: "",
-    genre: "",
-    year: "",
-    cover: "",
+    description: "",
+    image: "",
+    rating: 0,
+    numberOfPages: 100,
+    publishDate: new Date().getFullYear(),
 };
 
 const BookCreateForm = () => {
     const navigate = useNavigate();
 
-    function handleSubmit(newBook) {
-        let books = [];
-        const localData = localStorage.getItem("books");
-        if (localData) {
-            books = JSON.parse(localData);
+    async function handleSubmit(newBook) {
+        const booksUrl = import.meta.env.VITE_BOOKS_URL;
+
+        const response = await axios.post(booksUrl, newBook);
+        if (response.status === 200) {
+            navigate("/books");
         }
 
-        const id = books.reduce((acc, books) => Math.max(acc, books.id), 0) + 1;
-        newBook.id = id;
-        newBook.isFavorite = false;
-        newBook.cover_url = newBook.cover;
-        delete newBook.cover;
-        const newList = [...books, newBook];
-        localStorage.setItem("books", JSON.stringify(newList));
-
         // перенаправити користувача на сторінку з книгами
-        navigate("/books");
     }
 
     const getError = (prop) => {
@@ -96,14 +90,13 @@ const BookCreateForm = () => {
         title: string()
             .required("Обов'язкове поле")
             .max(100, "Максимальна довжина 100 символів"),
-        author: string().max(100, "Максимальна довжина 100 символів"),
-        genre: string()
-            .required("Обов'язкове поле")
-            .max(50, "Максимальна довжина 50 символів"),
-        year: number()
-            .min(0, "Рік не може бути від'ємним")
-            .max(maxYear, `Рік не може бути більшим за ${maxYear}`)
-            .required("Обов'язкове поле"),
+        publishDate: number()
+            .min(1000, `Рік не може бути меншим за 1000`)
+            .max(maxYear, `Рік не може бути більшим за ${maxYear}`),
+        rating: number()
+            .min(0, `Рейтинг не може бути меншим за 0`)
+            .max(10, `Рейтинг не може бути більшим за 10`),
+        numberOfPages: number().min(1, `Повинна бути хоча б одна сторінка`),
     });
 
     // formik
@@ -152,57 +145,70 @@ const BookCreateForm = () => {
                         </FormControl>
                         {getError("title")}
                         <FormControl>
-                            <FormLabel htmlFor="author">Автор</FormLabel>
+                            <FormLabel htmlFor="description">Опис</FormLabel>
                             <TextField
-                                name="author"
-                                placeholder="Автор"
-                                autoComplete="author"
+                                name="description"
+                                placeholder="Опис"
                                 fullWidth
                                 variant="outlined"
-                                value={formik.values.author}
+                                value={formik.values.description}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
                         </FormControl>
-                        {getError("author")}
                         <FormControl>
-                            <FormLabel htmlFor="genre">Жанр</FormLabel>
+                            <FormLabel htmlFor="publishDate">Рік</FormLabel>
                             <TextField
-                                name="genre"
-                                placeholder="Жанр"
-                                autoComplete="genre"
-                                fullWidth
-                                variant="outlined"
-                                value={formik.values.genre}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                        </FormControl>
-                        {getError("genre")}
-                        <FormControl>
-                            <FormLabel htmlFor="year">Рік</FormLabel>
-                            <TextField
-                                name="year"
+                                name="publishDate"
                                 placeholder="Рік публікацї"
-                                autoComplete="year"
                                 fullWidth
                                 type="number"
                                 variant="outlined"
-                                value={formik.values.year}
+                                value={formik.values.publishDate}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {getError("year")}
+                            {getError("publishDate")}
                         </FormControl>
                         <FormControl>
-                            <FormLabel htmlFor="cover">Обкладинка</FormLabel>
+                            <FormLabel htmlFor="rating">Рейтинг</FormLabel>
                             <TextField
-                                name="cover"
+                                name="rating"
+                                placeholder="0-10"
+                                autoComplete="rating"
+                                fullWidth
+                                type="number"
+                                variant="outlined"
+                                value={formik.values.rating}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {getError("rating")}
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="numberOfPages">
+                                К-сть сторінок
+                            </FormLabel>
+                            <TextField
+                                name="numberOfPages"
+                                placeholder="100"
+                                fullWidth
+                                type="number"
+                                variant="outlined"
+                                value={formik.values.numberOfPages}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {getError("numberOfPages")}
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="image">Обкладинка</FormLabel>
+                            <TextField
+                                name="image"
                                 placeholder="Обкладинка"
-                                autoComplete="cover"
                                 fullWidth
                                 variant="outlined"
-                                value={formik.values.cover}
+                                value={formik.values.image}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />

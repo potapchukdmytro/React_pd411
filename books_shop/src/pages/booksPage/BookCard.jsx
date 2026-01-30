@@ -23,8 +23,8 @@ const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
         favoriteCallback(book.id, favoriteState);
     };
 
-    const deleteClickHandle = () => {
-        deleteCallback(book.id);
+    const deleteClickHandle = async () => {
+        await deleteCallback(book.id);
     };
 
     return (
@@ -54,15 +54,15 @@ const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
                 component="img"
                 height="350"
                 image={
-                    book.cover_url
-                        ? book.cover_url
+                    book.image
+                        ? book.image
                         : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
                 }
                 alt={book.title}
             />
             <CardContent sx={{textAlign: "center"}}>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    <Rating readOnly max={10} value={Math.round(book.rating * 10)}/>
+                    <Rating readOnly max={10} value={book.rating * 2}/>
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>

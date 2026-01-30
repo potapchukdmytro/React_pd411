@@ -27,7 +27,7 @@ const BookListPage = () => {
 
     async function fetchBooks() {
         const booksUrl = import.meta.env.VITE_BOOKS_URL;
-        const pageCount = 15;
+        const pageCount = 20;
         const page = 1;
         const url = `${booksUrl}?page_size=${pageCount}&page=${page}`;
 
@@ -37,11 +37,8 @@ const BookListPage = () => {
             const booksData = [];
             for (const book of data.data.items) {
                 const formated = {
-                    id: book.id,
-                    title: book.title,
-                    author: book.author.name,
-                    cover_url: book.image,
-                    rating: book.rating,
+                    ...book,
+                    author: book.author ? book.author.name : "невідомий",
                     isFavorite: false,
                 };
                 booksData.push(formated);
@@ -66,10 +63,14 @@ const BookListPage = () => {
         fetchBooks();
     }, []);
 
-    const deleteBook = (id) => {
-        const newList = books.filter((b) => b.id !== id);
-        setBooks(newList);
-        localStorage.setItem("books", JSON.stringify(newList));
+    const deleteBook = async (id) => {
+        const booksUrl = import.meta.env.VITE_BOOKS_URL;
+        try {
+            await axios.delete(`${booksUrl}/${id}`);
+        } catch(error){
+            console.log(error);
+        }
+        await fetchBooks();
     };
 
     const setFavorite = (id, favorite) => {
