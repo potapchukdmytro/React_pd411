@@ -29,3 +29,11 @@ export const AuthProvider = ({children}) => {
         </AuthContext.Provider>
     )
 }
+
+
+const oldState = {
+    balance: 0,
+    pinCode: 1345,
+}
+
+const newState = {...oldState, balance: 10};

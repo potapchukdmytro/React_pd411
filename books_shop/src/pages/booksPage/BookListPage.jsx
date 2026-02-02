@@ -11,6 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 const BookListPage = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
+
     const { isAuth, user } = useAuth();
 
     // спрацює тільки при першому рендері
