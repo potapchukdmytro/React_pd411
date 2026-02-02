@@ -13,18 +13,20 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { Link } from "react-router";
 import { Rating } from "@mui/material";
+import { useDispatch } from "react-redux";
+import axios from "axios";
 
-const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
-    const [isFavorite, setIsFavorite] = useState(book.isFavorite);
-
-    const setFavoriteHandle = () => {
-        const favoriteState = !isFavorite;
-        setIsFavorite(favoriteState);
-        favoriteCallback(book.id, favoriteState);
-    };
+const BookCard = ({ book }) => {
+    const dispatch = useDispatch();
 
     const deleteClickHandle = async () => {
-        await deleteCallback(book.id);
+        const booksUrl = import.meta.env.VITE_BOOKS_URL;
+        try {
+            await axios.delete(`${booksUrl}/${book.id}`);
+            dispatch({ type: "deleteBook", payload: book.id });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -67,8 +69,6 @@ const BookCard = ({ book, deleteCallback, favoriteCallback }) => {
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton
-                    onClick={setFavoriteHandle}
-                    color={isFavorite ? "error" : ""}
                     aria-label="add to favorites"
                 >
                     <FavoriteIcon />

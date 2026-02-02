@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import { object, number, string } from "yup";
 import { useEffect } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -64,13 +65,20 @@ const initValues = {
 };
 
 const BookUpdateForm = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { id } = useParams();
+    const { books } = useSelector((state) => state.book);
 
     async function handleSubmit(newBook) {
+        delete newBook.author;
         const booksUrl = import.meta.env.VITE_BOOKS_URL;
         const response = await axios.put(booksUrl, newBook);
-        if(response.status === 200) {
+        if (response.status === 200) {
+            const index = books.findIndex(b => b.id == newBook.id);            
+            let newBooks = [...books];
+            newBooks[index] = newBook;
+            dispatch({ type: "updateBook", payload: newBooks });
             navigate("/books");
         }
     }
@@ -108,10 +116,10 @@ const BookUpdateForm = () => {
     useEffect(() => {
         const readBook = async () => {
             const booksUrl = import.meta.env.VITE_BOOKS_URL;
-            
+
             const response = await axios.get(`${booksUrl}/${id}`);
-            if(response.status === 200) {
-                const {data} = response;
+            if (response.status === 200) {
+                const { data } = response;
                 const oldBook = data.data;
                 await formik.setValues(oldBook, false);
             } else {

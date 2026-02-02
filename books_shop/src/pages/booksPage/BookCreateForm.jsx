@@ -11,6 +11,7 @@ import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -63,6 +64,7 @@ const initValues = {
 };
 
 const BookCreateForm = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     async function handleSubmit(newBook) {
@@ -70,6 +72,7 @@ const BookCreateForm = () => {
 
         const response = await axios.post(booksUrl, newBook);
         if (response.status === 200) {
+            dispatch({ type: "createBook", payload: newBook });
             navigate("/books");
         }
 

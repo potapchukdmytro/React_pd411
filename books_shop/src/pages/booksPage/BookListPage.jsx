@@ -6,13 +6,17 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Link } from "react-router";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+// dispatch - для запису у store
+// useSelector - для отримання із store
 
 // sx == style
 const BookListPage = () => {
-    const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(true);
-
+    const dispatch = useDispatch();
     const { isAuth, user } = useAuth();
+
+    // отримання масиву книг та стану завантаження
+    const { books, isLoaded } = useSelector((state) => state.book);
 
     // спрацює тільки при першому рендері
     // useEffect(() => {
@@ -28,27 +32,29 @@ const BookListPage = () => {
 
     async function fetchBooks() {
         const booksUrl = import.meta.env.VITE_BOOKS_URL;
-        const pageCount = 20;
+        const pageCount = 150;
         const page = 1;
         const url = `${booksUrl}?page_size=${pageCount}&page=${page}`;
 
-        const response = await axios.get(url);
-        const { data, status } = response;
-        if (status === 200) {
-            const booksData = [];
-            for (const book of data.data.items) {
-                const formated = {
-                    ...book,
-                    author: book.author ? book.author.name : "невідомий",
-                    isFavorite: false,
-                };
-                booksData.push(formated);
+        if (!isLoaded) {
+            const response = await axios.get(url);
+            const { data, status } = response;
+            if (status === 200) {
+                const booksData = [];
+                for (const book of data.data.items) {
+                    const formated = {
+                        ...book,
+                        author: book.author ? book.author.name : "невідомий",
+                        isFavorite: false,
+                    };
+                    booksData.push(formated);
+                }
+                // запис у store
+                dispatch({ type: "loadBooks", payload: booksData });
+                // localStorage.setItem("books", JSON.stringify(booksData));
+            } else {
+                console.log("Не вдалося завантажити книги");
             }
-            setBooks(booksData);
-            setLoading(false);
-            // localStorage.setItem("books", JSON.stringify(booksData));
-        } else {
-            console.log("Не вдалося завантажити книги");
         }
     }
 
@@ -64,27 +70,7 @@ const BookListPage = () => {
         fetchBooks();
     }, []);
 
-    const deleteBook = async (id) => {
-        const booksUrl = import.meta.env.VITE_BOOKS_URL;
-        try {
-            await axios.delete(`${booksUrl}/${id}`);
-        } catch(error){
-            console.log(error);
-        }
-        await fetchBooks();
-    };
-
-    const setFavorite = (id, favorite) => {
-        const newList = [...books];
-        const index = newList.findIndex((b) => b.id === id);
-        if (index !== -1) {
-            newList[index].isFavorite = favorite;
-            setBooks(newList);
-            localStorage.setItem("books", JSON.stringify(newList));
-        }
-    };
-
-    if (loading) {
+    if (!isLoaded) {
         return (
             <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <CircularProgress enableTrackSlot size="3rem" sx={{ mt: 4 }} />
@@ -101,13 +87,9 @@ const BookListPage = () => {
             }}
         >
             <Grid container spacing={2} mx="100px" my="50px">
-                {books.map((b) => (
-                    <Grid size={4} key={b.id}>
-                        <BookCard
-                            book={b}
-                            deleteCallback={deleteBook}
-                            favoriteCallback={setFavorite}
-                        />
+                {books.map((b, index) => (
+                    <Grid size={4} key={index}>
+                        <BookCard book={b} />
                     </Grid>
                 ))}
                 {isAuth && user.role === "admin" && (
