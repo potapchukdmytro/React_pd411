@@ -4,6 +4,7 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { Select, MenuItem } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
@@ -11,6 +12,8 @@ import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import { useNavigate } from "react-router";
 import { useAction } from "../../store/hooks/useAction";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -60,22 +63,33 @@ const initValues = {
     rating: 0,
     numberOfPages: 100,
     publishDate: new Date().getFullYear(),
+    authorId: 0,
 };
 
 const BookCreateForm = () => {
     const navigate = useNavigate();
-    const { createBook } = useAction();
+    const { createBook, loadAuthors } = useAction();
+    const { authors, isLoaded } = useSelector((state) => state.author);
 
-    const handleSubmit = async (newBook) => {
+    useEffect(() => {
+        const fetchAuthors = async () => {
+            await loadAuthors();
+        };
+        if (!isLoaded) {
+            fetchAuthors();
+        }
+    }, []);
+
+    const handleSubmit = async (newBook) => {        
         const result = await createBook(newBook);
-        if(result) {
-            navigate("/books")
+        if (result) {
+            navigate("/books");
         } else {
             console.log("Не вдалося створити книгу");
         }
 
         // перенаправити користувача на сторінку з книгами
-    }
+    };
 
     const getError = (prop) => {
         return formik.touched[prop] && formik.errors[prop] ? (
@@ -213,6 +227,21 @@ const BookCreateForm = () => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="authorId">Автор</FormLabel>
+                            <Select
+                                name="authorId"
+                                value={formik.values.authorId}
+                                onChange={formik.handleChange}
+                            >
+                                <MenuItem value={0}>Невідомий</MenuItem>
+                                {authors.map((author) => (
+                                    <MenuItem key={author.id} value={author.id}>
+                                        {author.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
                         </FormControl>
                         <Button
                             type="submit"

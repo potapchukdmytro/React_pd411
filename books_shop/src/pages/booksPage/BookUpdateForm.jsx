@@ -4,6 +4,7 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { Select, MenuItem } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
@@ -13,6 +14,7 @@ import { object, number, string } from "yup";
 import { useEffect } from "react";
 import axios from "axios";
 import { useAction } from "../../store/hooks/useAction";
+import { useSelector } from "react-redux";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -62,16 +64,20 @@ const initValues = {
     rating: 0,
     number_of_pages: 100,
     publish_date: new Date().getFullYear(),
+    authorId: 0,
 };
 
 const BookUpdateForm = () => {
-    const { updateBook } = useAction();
+    const { updateBook, loadAuthors } = useAction();
     const navigate = useNavigate();
+    const { authors, isLoaded } = useSelector((state) => state.author);
     const { id } = useParams();
 
-    async function handleSubmit(newBook) {
+    async function handleSubmit(newBook) {    
+        console.log(newBook);
+            
         const result = await updateBook(newBook);
-        if(result) {
+        if (result) {
             navigate("/books");
         } else {
             console.log("Помилка під час редагування");
@@ -109,6 +115,15 @@ const BookUpdateForm = () => {
     });
 
     useEffect(() => {
+        const fetchAuthors = async () => {
+            await loadAuthors();
+        };
+        if (!isLoaded) {
+            fetchAuthors();
+        }
+    }, []);
+
+    useEffect(() => {
         const readBook = async () => {
             const booksUrl = import.meta.env.VITE_BOOKS_URL;
 
@@ -116,6 +131,11 @@ const BookUpdateForm = () => {
             if (response.status === 200) {
                 const { data } = response;
                 const oldBook = data.data;
+                if(oldBook.author) {
+                    oldBook.authorId = oldBook.author.id;
+                } else {
+                    oldBook.authorId = 0;
+                }
                 await formik.setValues(oldBook, false);
             } else {
                 navigate("/books");
@@ -230,6 +250,21 @@ const BookUpdateForm = () => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="authorId">Автор</FormLabel>
+                            <Select
+                                name="authorId"
+                                value={formik.values.authorId}
+                                onChange={formik.handleChange}
+                            >
+                                <MenuItem value={0}>Невідомий</MenuItem>
+                                {authors.map((author) => (
+                                    <MenuItem key={author.id} value={author.id}>
+                                        {author.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
                         </FormControl>
                         <Button
                             type="submit"
