@@ -1,73 +1,26 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import BookCard from "./BookCard";
-import booksJson from "./books.json";
 import { Box, Grid, IconButton, CircularProgress } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Link } from "react-router";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useAction } from "../../store/hooks/useAction";
 // dispatch - для запису у store
 // useSelector - для отримання із store
 
 // sx == style
 const BookListPage = () => {
-    const dispatch = useDispatch();
     const { isAuth, user } = useAuth();
+    const { loadBooks } = useAction();
 
     // отримання масиву книг та стану завантаження
     const { books, isLoaded } = useSelector((state) => state.book);
 
-    // спрацює тільки при першому рендері
-    // useEffect(() => {
-    //     // тут знаходиться код який повинен спрацювати тільки один раз
-    //     const localData = localStorage.getItem("books");
-    //     if (localData) {
-    //         setBooks(JSON.parse(localData));
-    //     } else {
-    //         setBooks(booksJson);
-    //         localStorage.setItem("books", JSON.stringify(booksJson));
-    //     }
-    // }, [])
-
-    async function fetchBooks() {
-        const booksUrl = import.meta.env.VITE_BOOKS_URL;
-        const pageCount = 150;
-        const page = 1;
-        const url = `${booksUrl}?page_size=${pageCount}&page=${page}`;
-
-        if (!isLoaded) {
-            const response = await axios.get(url);
-            const { data, status } = response;
-            if (status === 200) {
-                const booksData = [];
-                for (const book of data.data.items) {
-                    const formated = {
-                        ...book,
-                        author: book.author ? book.author.name : "невідомий",
-                        isFavorite: false,
-                    };
-                    booksData.push(formated);
-                }
-                // запис у store
-                dispatch({ type: "loadBooks", payload: booksData });
-                // localStorage.setItem("books", JSON.stringify(booksData));
-            } else {
-                console.log("Не вдалося завантажити книги");
-            }
-        }
-    }
-
     useEffect(() => {
-        // const localData = localStorage.getItem("books");
-        // if (localData) {
-        //     setBooks(JSON.parse(localData));
-        //     setLoading(false);
-        // } else {
-        //     // запит на API
-        //     fetchBooks();
-        // }
-        fetchBooks();
+        loadBooks()
+            .then((result) => {})
+            .catch((error) => console.error(error));
     }, []);
 
     if (!isLoaded) {

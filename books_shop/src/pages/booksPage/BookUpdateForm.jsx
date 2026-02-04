@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import { object, number, string } from "yup";
 import { useEffect } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useAction } from "../../store/hooks/useAction";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -65,21 +65,16 @@ const initValues = {
 };
 
 const BookUpdateForm = () => {
-    const dispatch = useDispatch();
+    const { updateBook } = useAction();
     const navigate = useNavigate();
     const { id } = useParams();
-    const { books } = useSelector((state) => state.book);
 
     async function handleSubmit(newBook) {
-        delete newBook.author;
-        const booksUrl = import.meta.env.VITE_BOOKS_URL;
-        const response = await axios.put(booksUrl, newBook);
-        if (response.status === 200) {
-            const index = books.findIndex(b => b.id == newBook.id);            
-            let newBooks = [...books];
-            newBooks[index] = newBook;
-            dispatch({ type: "updateBook", payload: newBooks });
+        const result = await updateBook(newBook);
+        if(result) {
             navigate("/books");
+        } else {
+            console.log("Помилка під час редагування");
         }
     }
 

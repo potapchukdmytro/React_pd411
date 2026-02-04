@@ -10,8 +10,7 @@ import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { object, string, number } from "yup";
 import { useNavigate } from "react-router";
-import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useAction } from "../../store/hooks/useAction";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -64,16 +63,15 @@ const initValues = {
 };
 
 const BookCreateForm = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { createBook } = useAction();
 
-    async function handleSubmit(newBook) {
-        const booksUrl = import.meta.env.VITE_BOOKS_URL;
-
-        const response = await axios.post(booksUrl, newBook);
-        if (response.status === 200) {
-            dispatch({ type: "createBook", payload: newBook });
-            navigate("/books");
+    const handleSubmit = async (newBook) => {
+        const result = await createBook(newBook);
+        if(result) {
+            navigate("/books")
+        } else {
+            console.log("Не вдалося створити книгу");
         }
 
         // перенаправити користувача на сторінку з книгами

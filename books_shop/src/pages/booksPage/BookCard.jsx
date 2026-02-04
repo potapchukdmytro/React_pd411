@@ -15,18 +15,13 @@ import { Link } from "react-router";
 import { Rating } from "@mui/material";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { useAction } from "../../store/hooks/useAction";
 
 const BookCard = ({ book }) => {
-    const dispatch = useDispatch();
+    const {deleteBook} = useAction();
 
     const deleteClickHandle = async () => {
-        const booksUrl = import.meta.env.VITE_BOOKS_URL;
-        try {
-            await axios.delete(`${booksUrl}/${book.id}`);
-            dispatch({ type: "deleteBook", payload: book.id });
-        } catch (error) {
-            console.log(error);
-        }
+        await deleteBook(book.id);
     };
 
     return (
@@ -49,7 +44,7 @@ const BookCard = ({ book }) => {
                     </IconButton>
                 }
                 title={book.title}
-                subheader={book.author}
+                subheader={book.author ? book.author.name : "Невідомий"}
             />
             <CardMedia
                 sx={{ objectFit: "contain" }}
