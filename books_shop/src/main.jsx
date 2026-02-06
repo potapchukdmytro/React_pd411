@@ -6,6 +6,7 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { store } from "./store/store.js";
 import { Provider } from "react-redux";
+import ToastifyProvider from "./components/toastify/ToastifyProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
     // <StrictMode>

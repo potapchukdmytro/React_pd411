@@ -41,7 +41,7 @@ const BookListPage = () => {
         >
             <Grid container spacing={2} mx="100px" my="50px">
                 {books.map((b, index) => (
-                    <Grid size={4} key={index}>
+                    <Grid size={{sm: 12, md: 6, lg: 4, xl: 4}} key={index}>
                         <BookCard book={b} />
                     </Grid>
                 ))}

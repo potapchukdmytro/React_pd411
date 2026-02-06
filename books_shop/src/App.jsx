@@ -15,6 +15,7 @@ import { ThemeProvider } from "@mui/material";
 import { lightTheme } from "./theme/lightTheme";
 import { darkTheme } from "./theme/darkTheme";
 import RegisterPage from "./pages/auth/registerPage/RegisterPage";
+import ToastifyProvider from "./components/toastify/ToastifyProvider";
 
 function App() {
     const { isAuth, login, user } = useAuth();
@@ -28,7 +29,7 @@ function App() {
     }, []);
 
     // theme
-    const [isDark, setIsDark] = useState(false);
+    const [isDark, setIsDark] = useState(true);
 
     return (
         <>
@@ -91,6 +92,7 @@ function App() {
                         <Route path="*" element={<NotFoundPage />} />
                     </Route>
                 </Routes>
+                <ToastifyProvider theme={isDark} />
             </ThemeProvider>
         </>
     );

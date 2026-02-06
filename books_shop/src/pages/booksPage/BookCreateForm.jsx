@@ -14,6 +14,7 @@ import { useNavigate } from "react-router";
 import { useAction } from "../../store/hooks/useAction";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -81,11 +82,23 @@ const BookCreateForm = () => {
     }, []);
 
     const handleSubmit = async (newBook) => {        
-        const result = await createBook(newBook);
+        // const result = await createBook(newBook);
+        const result = false;
         if (result) {
+            toast.success(`Книгу '${newBook.title}' успішно додано`);
             navigate("/books");
         } else {
-            console.log("Не вдалося створити книгу");
+            toast.error('Не вдалося створити книгу', {
+                position: "top-center"
+            });
+
+            toast.warning('Попередежння', {
+                position: "top-center"
+            });
+
+            toast('Інформація', {
+                
+            });
         }
 
         // перенаправити користувача на сторінку з книгами
