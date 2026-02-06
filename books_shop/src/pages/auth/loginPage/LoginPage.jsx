@@ -16,6 +16,8 @@ import { styled } from "@mui/material/styles";
 import ForgotPassword from "./../components/ForgotPassword";
 import { Link, useNavigate } from "react-router";
 import { GoogleIcon, FacebookIcon } from "./../components/CustomIcons";
+import { GoogleLogin, GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -91,14 +93,14 @@ const LoginPage = () => {
         }
 
         const localData = localStorage.getItem("users");
-        if(!localData) {
+        if (!localData) {
             navigate("/register");
         }
         const users = JSON.parse(localData);
 
-        const user = users.find(u => u.email === cred.email);
+        const user = users.find((u) => u.email === cred.email);
 
-        if(!user || cred.password !== user.password) {
+        if (!user || cred.password !== user.password) {
             alert("Пошта або пароль вказані невірно");
             return;
         }
@@ -133,6 +135,26 @@ const LoginPage = () => {
 
         return { result: result, errors: validateErrors };
     }
+
+    // google auth
+    const succesAuth = ({ credential }) => {
+        const userData = jwtDecode(credential);
+        const user = {
+            email: userData.email,
+            firstName: userData.given_name,
+            lastName: userData.family_name,
+            image: userData.picture,
+            role: "user",
+        };
+
+        localStorage.setItem("auth", JSON.stringify(user));
+        login();
+        navigate("/");
+    };
+
+    const errorAuth = (error) => {
+        console.log(error);
+    };
 
     const getError = (prop) => {
         return errors[prop] ? (
@@ -224,14 +246,15 @@ const LoginPage = () => {
                             gap: 2,
                         }}
                     >
-                        <Button
+                        {/* <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => alert("Sign in with Google")}
+                            onClick={() => googleLogin()}
                             startIcon={<GoogleIcon />}
                         >
                             Sign in with Google
-                        </Button>
+                        </Button> */}
+                        <GoogleLogin onSuccess={succesAuth} onError={errorAuth}/>
                         <Button
                             fullWidth
                             variant="outlined"

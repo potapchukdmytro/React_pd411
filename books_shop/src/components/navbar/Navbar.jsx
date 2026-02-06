@@ -22,7 +22,7 @@ const Navbar = ({ isDark, setIsDark }) => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
-    const { isAuth, logout } = useAuth();
+    const { isAuth, logout, user } = useAuth();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -179,7 +179,7 @@ const Navbar = ({ isDark, setIsDark }) => {
                                     >
                                         <Avatar
                                             alt="Remy Sharp"
-                                            src="/static/images/avatar/2.jpg"
+                                            src={user.image ? user.image : ""} 
                                         />
                                     </IconButton>
                                 </Tooltip>

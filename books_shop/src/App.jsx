@@ -16,6 +16,8 @@ import { lightTheme } from "./theme/lightTheme";
 import { darkTheme } from "./theme/darkTheme";
 import RegisterPage from "./pages/auth/registerPage/RegisterPage";
 import ToastifyProvider from "./components/toastify/ToastifyProvider";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import LoginPageByGoole from "./pages/auth/loginPage";
 
 function App() {
     const { isAuth, login, user } = useAuth();
@@ -80,7 +82,7 @@ function App() {
 
                         {!isAuth && (
                             <>
-                                <Route path="login" element={<LoginPage />} />
+                                <Route path="login" element={<LoginPageByGoole />} />
                                 <Route
                                     path="register"
                                     element={<RegisterPage />}
@@ -94,7 +96,7 @@ function App() {
                 </Routes>
                 <ToastifyProvider theme={isDark} />
             </ThemeProvider>
-        </>
+            </>
     );
 }
 
